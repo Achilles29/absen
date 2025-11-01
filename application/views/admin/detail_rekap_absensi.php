@@ -45,7 +45,7 @@
                         <td><?= $row->terlambat ?> menit</td>
                         <td><?= $row->pulang_cepat ?> menit</td>
                         <td><?= $row->lama_menit_kerja ?> menit</td>
-                        <td>Rp <?= number_format($row->total_gaji, 2, ',', '.') ?></td>
+                        <td>Rp <?= number_format($row->total_gaji ?? 0, 2, ',', '.') ?></td>
                     </tr>
                 <?php endforeach; ?>
             <?php else: ?>

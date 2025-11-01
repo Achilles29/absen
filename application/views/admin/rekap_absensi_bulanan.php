@@ -73,7 +73,7 @@
                         <td><?= $row->total_terlambat ?? 0 ?></td>
                         <td><?= $row->total_pulang_cepat ?? 0 ?></td>
                         <td><?= $row->total_lama_kerja ?? 0 ?></td>
-                        <td class="nowrap text-right">Rp <?= number_format($row->total_gaji, 2, ',', '.') ?></td>
+                        <td class="nowrap text-right">Rp <?= number_format(isset($row->total_gaji) ? $row->total_gaji : 0, 0, ',', '.') ?></td>
                         <td><a href="<?= site_url('admin/detail_rekap_absensi/' . $row->pegawai_id) ?>" class="btn btn-info btn-sm">Detail</a></td>
                     </tr>
                 <?php endforeach; ?>

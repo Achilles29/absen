@@ -1,13 +1,16 @@
 <?php
-defined('BASEPATH') OR exit('No direct script access allowed');
+defined('BASEPATH') or exit('No direct script access allowed');
 
-class Pegawai_model extends CI_Model {
-    public function __construct() {
+class Pegawai_model extends CI_Model
+{
+    public function __construct()
+    {
         parent::__construct();
     }
 
     // Ambil data pegawai berdasarkan ID
-    public function get_pegawai_by_id($pegawai_id) {
+    public function get_pegawai_by_id($pegawai_id)
+    {
         $this->db->select('
             abs_pegawai.id, 
             abs_pegawai.nama, 
@@ -23,21 +26,26 @@ class Pegawai_model extends CI_Model {
 
 
     // Ambil semua pegawai dengan detail divisi dan jabatan
-    public function get_all_pegawai() {
+    public function get_all_pegawai()
+    {
         $this->db->select('abs_pegawai.*, abs_divisi.nama_divisi, j1.nama_jabatan AS jabatan1, j2.nama_jabatan AS jabatan2');
         $this->db->from('abs_pegawai');
         $this->db->join('abs_divisi', 'abs_pegawai.divisi_id = abs_divisi.id');
         $this->db->join('abs_jabatan AS j1', 'abs_pegawai.jabatan1_id = j1.id');
         $this->db->join('abs_jabatan AS j2', 'abs_pegawai.jabatan2_id = j2.id', 'left');
+        $this->db->where('abs_pegawai.kode_user !=', 'Nonaktif'); // ← Tambahan ini
         return $this->db->get()->result();
     }
 
+
     // Ambil semua pegawai kecuali admin
-    public function get_all_pegawai_except_admin() {
+    public function get_all_pegawai_except_admin()
+    {
         $this->db->select('abs_pegawai.id, abs_pegawai.nama, abs_divisi.nama_divisi');
         $this->db->from('abs_pegawai');
         $this->db->join('abs_divisi', 'abs_divisi.id = abs_pegawai.divisi_id', 'left');
-        $this->db->where('abs_pegawai.kode_user !=', 'admin'); // Kecualikan admin
+        // $this->db->where('abs_pegawai.kode_user !=', 'admin'); // Kecualikan admin
+        $this->db->where('abs_pegawai.kode_user !=', 'Nonaktif');
         //$this->db->where('abs_pegawai.kode_user', 'pegawai'); // Hanya tampilkan pegawai
         $this->db->order_by('abs_divisi.nama_divisi', 'ASC'); // Urutkan berdasarkan nama divisi
         $this->db->order_by('abs_pegawai.id', 'ASC');         // Lalu urutkan berdasarkan ID pegawai
@@ -45,7 +53,8 @@ class Pegawai_model extends CI_Model {
     }
 
     // Ambil semua pegawai biasa (kecuali admin dan HOD)
-    public function get_pegawai_biasa() {
+    public function get_pegawai_biasa()
+    {
         $this->db->select('id, nama, divisi_id, kode_user');
         $this->db->from('abs_pegawai');
         $this->db->where_not_in('kode_user', ['admin', 'hod']); // Filter untuk menyembunyikan admin dan HOD
@@ -58,13 +67,17 @@ class Pegawai_model extends CI_Model {
     //     $this->db->where('kode_user', 'pegawai');
     //     return $this->db->count_all_results('abs_pegawai');
     // }
-    public function count_all_pegawai() {
-        $this->db->where('kode_user !=', 'admin');
+    public function count_all_pegawai()
+    {
+        //        $this->db->where('kode_user !=', 'admin');
+        $this->db->where_not_in('kode_user', ['admin', 'Nonaktif']);
+
         return $this->db->count_all_results('abs_pegawai');
     }
 
     // Hitung total gaji berjalan
-    public function calculate_total_gaji_berjalan() {
+    public function calculate_total_gaji_berjalan()
+    {
         $query = $this->db->query("
             SELECT 
                 p.id AS pegawai_id,
@@ -91,11 +104,13 @@ class Pegawai_model extends CI_Model {
         return $total_gaji;
     }
 
-    public function insert_pegawai($data) {
+    public function insert_pegawai($data)
+    {
         return $this->db->insert('pegawai', $data);
     }
 
-    public function update_pegawai($id, $data) {
+    public function update_pegawai($id, $data)
+    {
         $this->db->where('id', $id);
         return $this->db->update('pegawai', $data);
     }

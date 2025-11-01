@@ -83,7 +83,7 @@ thead th {
                             <td class="nowrap"><?= $row->jam_masuk ?></td>
                             <td class="nowrap"><?= $row->jam_pulang ?></td>
                             <td class="nowrap"><?= $row->lama_menit_kerja ?></td>
-                            <td class="nowrap" style="text-align: right;">Rp <?= number_format($row->total_gaji, 2, ',', '.') ?></td>
+                            <td class="nowrap" style="text-align: right;">Rp <?= number_format($row->total_gaji ?? 0, 2, ',', '.') ?></td>
                             <td class="nowrap" style="text-align: right;">Rp <?= number_format($row->total_gaji_lembur, 2, ',', '.') ?></td>
                             <td class="nowrap" style="text-align: right;">Rp <?= number_format($row->tambahan_lain, 2, ',', '.') ?></td>
                             <td class="nowrap" style="text-align: right;">Rp <?= number_format($row->potongan, 2, ',', '.') ?></td>

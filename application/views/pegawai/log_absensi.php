@@ -63,7 +63,7 @@ thead th {
                         <td class="nowrap text-right"><?= $log->terlambat ?></td>
                         <td class="nowrap text-right"><?= $log->pulang_cepat ?></td>
                         <td class="nowrap text-right"><?= $log->lama_menit_kerja ?></td>
-                        <td class="nowrap text-right">Rp <?= number_format($log->total_gaji, 2, ',', '.') ?></td>
+                        <td class="nowrap text-right">Rp <?= number_format($log->total_gaji ?? 0, 2, ',', '.') ?></td>
                     </tr>
                 <?php endforeach; ?>
             <?php else: ?>

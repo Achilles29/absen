@@ -35,7 +35,7 @@
                             <td style="white-space: nowrap;"><?= $rekap->terlambat ?: '0' ?></td>
                             <td style="white-space: nowrap;"><?= $rekap->pulang_cepat ?: '0' ?></td>
                             <td style="white-space: nowrap;"><?= $rekap->lama_menit_kerja ?: '0' ?></td>
-                            <td style="white-space: nowrap;">Rp <?= number_format($rekap->total_gaji, 2, ',', '.') ?></td>
+                            <td style="white-space: nowrap;">Rp <?= number_format($rekap->total_gaji ?? 0, 2, ',', '.') ?></td>
                         </tr>
                     <?php endforeach; ?>
                 <?php else: ?>
