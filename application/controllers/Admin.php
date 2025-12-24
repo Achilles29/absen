@@ -82,6 +82,7 @@ class Admin extends CI_Controller
                 'gaji_per_jam' => $gaji_pokok / 234,
                 'tunjangan' => $this->input->post('tunjangan'),
                 'tambahan_lain' => $this->input->post('tambahan_lain'),
+                'uang_makan' => $this->input->post('uang_makan') ?: 0,
                 'tanggal_kontrak_awal' => $tanggal_kontrak_awal,
                 'durasi_kontrak' => $durasi_kontrak,
                 'tanggal_kontrak_akhir' => $tanggal_kontrak_akhir,
@@ -96,18 +97,15 @@ class Admin extends CI_Controller
             redirect('admin/master_pegawai');
         }
 
-        // Ambil data untuk dropdown
         $data['divisi'] = $this->db->get('abs_divisi')->result();
         $data['jabatan'] = $this->db->get('abs_jabatan')->result();
         $data['kode_user'] = $this->db->get('kode_user')->result();
-        $data['rekening_bank'] = $this->db->get('abs_rekening_bank')->result(); // Tambahkan pengambilan data bank
+        $data['rekening_bank'] = $this->db->get('abs_rekening_bank')->result();
 
         $this->load->view('templates/header');
         $this->load->view('admin/pegawai/tambah_pegawai', $data);
         $this->load->view('templates/footer');
     }
-
-
 
     public function edit_pegawai($id)
     {
@@ -172,11 +170,12 @@ class Admin extends CI_Controller
             'gaji_per_jam' => $gaji_pokok / 234,
             'tunjangan' => $this->input->post('tunjangan'),
             'tambahan_lain' => $this->input->post('tambahan_lain'),
+            'uang_makan' => $this->input->post('uang_makan') ?: 0,
             'tanggal_kontrak_awal' => $tanggal_kontrak_awal,
             'durasi_kontrak' => $durasi_kontrak,
             'tanggal_kontrak_akhir' => $tanggal_kontrak_akhir,
             'nomor_rekening' => $this->input->post('nomor_rekening'),
-            'nama_bank_id' => $this->input->post('nama_bank_id'), // Ubah ini
+            'nama_bank_id' => $this->input->post('nama_bank_id'),
         ];
 
         $this->db->where('id', $id)->update('abs_pegawai', $data);
@@ -831,17 +830,14 @@ class Admin extends CI_Controller
 
     private function update_rekap_absensi($pegawai_id, $shift_id, $tanggal)
     {
-        // Ambil data pegawai untuk mendapatkan informasi jabatan dan gaji pokok
+        // Ambil data pegawai
         $pegawai = $this->db->get_where('abs_pegawai', ['id' => $pegawai_id])->row();
-
-        if (!$pegawai) {
-            return; // Jika data pegawai tidak ditemukan, keluar dari fungsi
-        }
+        if (!$pegawai) return;
 
         // Ambil data shift
         $shift = $this->db->get_where('abs_shift', ['id' => $shift_id])->row();
 
-        // Default data absensi
+        // Default
         $jam_masuk = null;
         $jam_pulang = null;
         $terlambat = 0;
@@ -849,27 +845,35 @@ class Admin extends CI_Controller
         $lama_menit_kerja = 0;
         $total_gaji = 0;
 
-        // Logika khusus untuk jabatan SECURITY
-        if ($pegawai->jabatan1_id == 10) { // Asumsi 10 adalah ID jabatan SECURITY
-            // Hitung gaji harian (gaji pokok dibagi 30 hari)
-            $total_gaji = round($pegawai->gaji_pokok / 30, 2);
-        } else {
+        // Ambil absensi valid di hari itu
+        $absensi = $this->db->select('
+        MIN(CASE WHEN jenis_absen = "masuk" THEN waktu END) AS jam_masuk,
+        MAX(CASE WHEN jenis_absen = "pulang" THEN waktu END) AS jam_pulang
+    ')
+            ->from('abs_absensi')
+            ->where('pegawai_id', $pegawai_id)
+            ->where('tanggal', $tanggal)
+            ->group_by('pegawai_id')
+            ->get()
+            ->row();
+
+        if ($absensi) {
+            $jam_masuk = $absensi->jam_masuk ?? null;
+            $jam_pulang = $absensi->jam_pulang ?? null;
+        }
+
+        // ✅ Jika SECURITY (jabatan1_id = 10)
+        if ($pegawai->jabatan1_id == 10) {
+            // Jika ada jam masuk valid → hitung 1 hari kerja
+            if ($jam_masuk) {
+                $total_gaji = round($pegawai->gaji_pokok / 30, 2);
+            } else {
+                $total_gaji = 0; // tidak ada absensi masuk
+            }
+        }
+        // 🧭 Selain SECURITY → logika normal
+        else {
             if ($shift) {
-                // Ambil data absensi pegawai untuk tanggal tertentu
-                $absensi = $this->db->select('
-                MIN(CASE WHEN jenis_absen = "masuk" THEN waktu END) AS jam_masuk,
-                MAX(CASE WHEN jenis_absen = "pulang" THEN waktu END) AS jam_pulang
-            ')
-                    ->from('abs_absensi')
-                    ->where('pegawai_id', $pegawai_id)
-                    ->where('tanggal', $tanggal)
-                    ->group_by('pegawai_id')
-                    ->get()
-                    ->row();
-
-                $jam_masuk = $absensi->jam_masuk ?? null;
-                $jam_pulang = $absensi->jam_pulang ?? null;
-
                 // Hitung keterlambatan
                 if ($jam_masuk && strtotime($jam_masuk) > strtotime($shift->jam_mulai)) {
                     $terlambat = (strtotime($jam_masuk) - strtotime($shift->jam_mulai)) / 60;
@@ -886,11 +890,11 @@ class Admin extends CI_Controller
 
                 // Hitung total gaji berdasarkan lama kerja
                 $gaji_per_menit = ($pegawai->gaji_per_jam ?? 0) / 60;
-                $total_gaji = $lama_menit_kerja * $gaji_per_menit;
+                $total_gaji = round($lama_menit_kerja * $gaji_per_menit, 2);
             }
         }
 
-        // Data untuk update abs_rekap_absensi
+        // Data update abs_rekap_absensi
         $rekap_data = [
             'tanggal' => $tanggal,
             'pegawai_id' => $pegawai_id,
@@ -900,10 +904,10 @@ class Admin extends CI_Controller
             'terlambat' => round($terlambat, 2),
             'pulang_cepat' => round($pulang_cepat, 2),
             'lama_menit_kerja' => round($lama_menit_kerja, 2),
-            'total_gaji' => round($total_gaji, 2)
+            'total_gaji' => $total_gaji
         ];
 
-        // Periksa apakah data rekap sudah ada
+        // Update atau insert
         $existing_rekap = $this->db->get_where('abs_rekap_absensi', [
             'pegawai_id' => $pegawai_id,
             'tanggal' => $tanggal
@@ -915,6 +919,7 @@ class Admin extends CI_Controller
             $this->db->insert('abs_rekap_absensi', $rekap_data);
         }
     }
+
 
     public function generate_rekap_absensi_harian()
     {

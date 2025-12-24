@@ -343,232 +343,233 @@ class Pegawai extends CI_Controller
     // }
 
 
-// private function update_rekap_absensi($pegawai_id, $shift_id, $tanggal)
-// {
-//     $pegawai = $this->db->get_where('abs_pegawai', ['id' => $pegawai_id])->row();
-//     if (!$pegawai) return;
+    // private function update_rekap_absensi($pegawai_id, $shift_id, $tanggal)
+    // {
+    //     $pegawai = $this->db->get_where('abs_pegawai', ['id' => $pegawai_id])->row();
+    //     if (!$pegawai) return;
 
-//     $shift = $this->db->get_where('abs_shift', ['id' => $shift_id])->row();
-//     if (!$shift) return;
+    //     $shift = $this->db->get_where('abs_shift', ['id' => $shift_id])->row();
+    //     if (!$shift) return;
 
-//     // Ambil data absensi hari ini
-//     $absensi = $this->db->get_where('abs_absensi', [
-//         'pegawai_id' => $pegawai_id,
-//         'tanggal' => $tanggal
-//     ])->result();
+    //     // Ambil data absensi hari ini
+    //     $absensi = $this->db->get_where('abs_absensi', [
+    //         'pegawai_id' => $pegawai_id,
+    //         'tanggal' => $tanggal
+    //     ])->result();
 
-//     $jam_masuk = null;
-//     $jam_pulang = null;
+    //     $jam_masuk = null;
+    //     $jam_pulang = null;
 
-//     foreach ($absensi as $a) {
-//         if ($a->jenis_absen == 'masuk' && (!$jam_masuk || $a->waktu < $jam_masuk)) {
-//             $jam_masuk = $a->waktu;
-//         }
-//         if ($a->jenis_absen == 'pulang' && (!$jam_pulang || $a->waktu > $jam_pulang)) {
-//             $jam_pulang = $a->waktu;
-//         }
-//     }
+    //     foreach ($absensi as $a) {
+    //         if ($a->jenis_absen == 'masuk' && (!$jam_masuk || $a->waktu < $jam_masuk)) {
+    //             $jam_masuk = $a->waktu;
+    //         }
+    //         if ($a->jenis_absen == 'pulang' && (!$jam_pulang || $a->waktu > $jam_pulang)) {
+    //             $jam_pulang = $a->waktu;
+    //         }
+    //     }
 
-//     // Cek apakah rekap sudah ada
-//     $existing_rekap = $this->db->get_where('abs_rekap_absensi', [
-//         'tanggal' => $tanggal,
-//         'pegawai_id' => $pegawai_id
-//     ])->row();
+    //     // Cek apakah rekap sudah ada
+    //     $existing_rekap = $this->db->get_where('abs_rekap_absensi', [
+    //         'tanggal' => $tanggal,
+    //         'pegawai_id' => $pegawai_id
+    //     ])->row();
 
-//     // Jika baru absen masuk → simpan jam_masuk saja
-//     if ($jam_masuk && !$jam_pulang) {
-//         $rekap_data = [
-//             'tanggal' => $tanggal,
-//             'pegawai_id' => $pegawai_id,
-//             'shift_id' => $shift_id,
-//             'jam_masuk' => $jam_masuk,
-//             'jam_pulang' => null,
-//             'terlambat' => null,
-//             'pulang_cepat' => null,
-//             'lama_menit_kerja' => null,
-//             'total_gaji' => null
-//         ];
+    //     // Jika baru absen masuk → simpan jam_masuk saja
+    //     if ($jam_masuk && !$jam_pulang) {
+    //         $rekap_data = [
+    //             'tanggal' => $tanggal,
+    //             'pegawai_id' => $pegawai_id,
+    //             'shift_id' => $shift_id,
+    //             'jam_masuk' => $jam_masuk,
+    //             'jam_pulang' => null,
+    //             'terlambat' => null,
+    //             'pulang_cepat' => null,
+    //             'lama_menit_kerja' => null,
+    //             'total_gaji' => null
+    //         ];
 
-//         if ($existing_rekap) {
-//             $this->db->update('abs_rekap_absensi', $rekap_data, ['id' => $existing_rekap->id]);
-//         } else {
-//             $this->db->insert('abs_rekap_absensi', $rekap_data);
-//         }
-//         return;
-//     }
+    //         if ($existing_rekap) {
+    //             $this->db->update('abs_rekap_absensi', $rekap_data, ['id' => $existing_rekap->id]);
+    //         } else {
+    //             $this->db->insert('abs_rekap_absensi', $rekap_data);
+    //         }
+    //         return;
+    //     }
 
-//     // Jika sudah ada jam pulang → hitung durasi & gaji
-//     if ($jam_masuk && $jam_pulang) {
-//         // Hitung terlambat dan pulang cepat
-//         $terlambat = 0;
-//         if (strtotime($jam_masuk) > strtotime($shift->jam_mulai)) {
-//             $terlambat = (strtotime($jam_masuk) - strtotime($shift->jam_mulai)) / 60;
-//         }
+    //     // Jika sudah ada jam pulang → hitung durasi & gaji
+    //     if ($jam_masuk && $jam_pulang) {
+    //         // Hitung terlambat dan pulang cepat
+    //         $terlambat = 0;
+    //         if (strtotime($jam_masuk) > strtotime($shift->jam_mulai)) {
+    //             $terlambat = (strtotime($jam_masuk) - strtotime($shift->jam_mulai)) / 60;
+    //         }
 
-//         $pulang_cepat = 0;
-//         if (strtotime($jam_pulang) < strtotime($shift->jam_selesai)) {
-//             $pulang_cepat = (strtotime($shift->jam_selesai) - strtotime($jam_pulang)) / 60;
-//         }
+    //         $pulang_cepat = 0;
+    //         if (strtotime($jam_pulang) < strtotime($shift->jam_selesai)) {
+    //             $pulang_cepat = (strtotime($shift->jam_selesai) - strtotime($jam_pulang)) / 60;
+    //         }
 
-//         // === Hitung durasi shift dalam menit ===
-//         $durasi_shift = max((strtotime($shift->jam_selesai) - strtotime($shift->jam_mulai)) / 60, 0);
+    //         // === Hitung durasi shift dalam menit ===
+    //         $durasi_shift = max((strtotime($shift->jam_selesai) - strtotime($shift->jam_mulai)) / 60, 0);
 
-//         // === Hitung lama kerja aktual ===
-//         $lama_menit_kerja = max((strtotime($jam_pulang) - strtotime($jam_masuk)) / 60, 0);
+    //         // === Hitung lama kerja aktual ===
+    //         $lama_menit_kerja = max((strtotime($jam_pulang) - strtotime($jam_masuk)) / 60, 0);
 
-//         // === Batasi agar tidak melebihi durasi shift ===
-//         if ($lama_menit_kerja > $durasi_shift) {
-//             $lama_menit_kerja = $durasi_shift;
-//         }
+    //         // === Batasi agar tidak melebihi durasi shift ===
+    //         if ($lama_menit_kerja > $durasi_shift) {
+    //             $lama_menit_kerja = $durasi_shift;
+    //         }
 
-//         // Hitung gaji
-//         $gaji_per_menit = ($pegawai->gaji_per_jam ?? 0) / 60;
-//         $total_gaji = round($lama_menit_kerja * $gaji_per_menit, 2);
+    //         // Hitung gaji
+    //         $gaji_per_menit = ($pegawai->gaji_per_jam ?? 0) / 60;
+    //         $total_gaji = round($lama_menit_kerja * $gaji_per_menit, 2);
 
-//         $rekap_data = [
-//             'tanggal' => $tanggal,
-//             'pegawai_id' => $pegawai_id,
-//             'shift_id' => $shift_id,
-//             'jam_masuk' => $jam_masuk,
-//             'jam_pulang' => $jam_pulang,
-//             'terlambat' => $terlambat,
-//             'pulang_cepat' => $pulang_cepat,
-//             'lama_menit_kerja' => $lama_menit_kerja,
-//             'total_gaji' => $total_gaji
-//         ];
+    //         $rekap_data = [
+    //             'tanggal' => $tanggal,
+    //             'pegawai_id' => $pegawai_id,
+    //             'shift_id' => $shift_id,
+    //             'jam_masuk' => $jam_masuk,
+    //             'jam_pulang' => $jam_pulang,
+    //             'terlambat' => $terlambat,
+    //             'pulang_cepat' => $pulang_cepat,
+    //             'lama_menit_kerja' => $lama_menit_kerja,
+    //             'total_gaji' => $total_gaji
+    //         ];
 
-//         if ($existing_rekap) {
-//             $this->db->update('abs_rekap_absensi', $rekap_data, ['id' => $existing_rekap->id]);
-//         } else {
-//             $this->db->insert('abs_rekap_absensi', $rekap_data);
-//         }
-//     }
-// }
+    //         if ($existing_rekap) {
+    //             $this->db->update('abs_rekap_absensi', $rekap_data, ['id' => $existing_rekap->id]);
+    //         } else {
+    //             $this->db->insert('abs_rekap_absensi', $rekap_data);
+    //         }
+    //     }
+    // }
 
+    private function update_rekap_absensi($pegawai_id, $shift_id, $tanggal)
+    {
+        // Ambil data pegawai + jabatan (pakai jabatan1_id)
+        $this->db->select('p.*, j.nama_jabatan');
+        $this->db->from('abs_pegawai p');
+        $this->db->join('abs_jabatan j', 'p.jabatan1_id = j.id', 'left');
+        $this->db->where('p.id', $pegawai_id);
+        $pegawai = $this->db->get()->row();
+        if (!$pegawai) return;
 
-private function update_rekap_absensi($pegawai_id, $shift_id, $tanggal)
-{
-    // Ambil data pegawai + jabatan
-    $this->db->select('p.*, j.nama_jabatan');
-    $this->db->from('abs_pegawai p');
-    $this->db->join('abs_jabatan j', 'p.jabatan_id = j.id', 'left');
-    $this->db->where('p.id', $pegawai_id);
-    $pegawai = $this->db->get()->row();
-    if (!$pegawai) return;
+        $shift = $this->db->get_where('abs_shift', ['id' => $shift_id])->row();
+        if (!$shift) return;
 
-    $shift = $this->db->get_where('abs_shift', ['id' => $shift_id])->row();
-    if (!$shift) return;
-
-    // Ambil data absensi hari ini
-    $absensi = $this->db->get_where('abs_absensi', [
-        'pegawai_id' => $pegawai_id,
-        'tanggal' => $tanggal
-    ])->result();
-
-    $jam_masuk = null;
-    $jam_pulang = null;
-
-    foreach ($absensi as $a) {
-        if ($a->jenis_absen == 'masuk' && (!$jam_masuk || $a->waktu < $jam_masuk)) {
-            $jam_masuk = $a->waktu;
-        }
-        if ($a->jenis_absen == 'pulang' && (!$jam_pulang || $a->waktu > $jam_pulang)) {
-            $jam_pulang = $a->waktu;
-        }
-    }
-
-    // Cek apakah rekap sudah ada
-    $existing_rekap = $this->db->get_where('abs_rekap_absensi', [
-        'tanggal' => $tanggal,
-        'pegawai_id' => $pegawai_id
-    ])->row();
-
-    // Jika baru absen masuk → simpan jam_masuk saja
-    if ($jam_masuk && !$jam_pulang) {
-        $rekap_data = [
-            'tanggal' => $tanggal,
+        // Ambil data absensi hari ini
+        $absensi = $this->db->get_where('abs_absensi', [
             'pegawai_id' => $pegawai_id,
-            'shift_id' => $shift_id,
-            'jam_masuk' => $jam_masuk,
-            'jam_pulang' => null,
-            'terlambat' => null,
-            'pulang_cepat' => null,
-            'lama_menit_kerja' => null,
-            'total_gaji' => null
-        ];
+            'tanggal' => $tanggal
+        ])->result();
 
-        if ($existing_rekap) {
-            $this->db->update('abs_rekap_absensi', $rekap_data, ['id' => $existing_rekap->id]);
-        } else {
-            $this->db->insert('abs_rekap_absensi', $rekap_data);
-        }
-        return;
-    }
+        $jam_masuk = null;
+        $jam_pulang = null;
 
-    // Jika sudah ada jam pulang → hitung durasi & gaji
-    if ($jam_masuk && $jam_pulang) {
-
-        // === Hitung dasar shift ===
-        $terlambat = 0;
-        if (strtotime($jam_masuk) > strtotime($shift->jam_mulai)) {
-            $terlambat = (strtotime($jam_masuk) - strtotime($shift->jam_mulai)) / 60;
+        foreach ($absensi as $a) {
+            if ($a->jenis_absen == 'masuk' && (!$jam_masuk || $a->waktu < $jam_masuk)) {
+                $jam_masuk = $a->waktu;
+            }
+            if ($a->jenis_absen == 'pulang' && (!$jam_pulang || $a->waktu > $jam_pulang)) {
+                $jam_pulang = $a->waktu;
+            }
         }
 
-        $pulang_cepat = 0;
-        if (strtotime($jam_pulang) < strtotime($shift->jam_selesai)) {
-            $pulang_cepat = (strtotime($shift->jam_selesai) - strtotime($jam_pulang)) / 60;
-        }
+        // Cek apakah rekap sudah ada
+        $existing_rekap = $this->db->get_where('abs_rekap_absensi', [
+            'tanggal' => $tanggal,
+            'pegawai_id' => $pegawai_id
+        ])->row();
 
-        $durasi_shift = max((strtotime($shift->jam_selesai) - strtotime($shift->jam_mulai)) / 60, 0);
-        $lama_menit_kerja = max((strtotime($jam_pulang) - strtotime($jam_masuk)) / 60, 0);
+        // Jika baru absen masuk → simpan jam_masuk saja
+        if ($jam_masuk && !$jam_pulang) {
+            $rekap_data = [
+                'tanggal' => $tanggal,
+                'pegawai_id' => $pegawai_id,
+                'shift_id' => $shift_id,
+                'jam_masuk' => $jam_masuk,
+                'jam_pulang' => null,
+                'terlambat' => null,
+                'pulang_cepat' => null,
+                'lama_menit_kerja' => null,
+                'total_gaji' => null
+            ];
 
-        // Batasi durasi agar tidak melebihi shift
-        if ($lama_menit_kerja > $durasi_shift) {
-            $lama_menit_kerja = $durasi_shift;
-        }
-
-        // === PERLAKUAN KHUSUS: SECURITY ===
-        $total_gaji = 0;
-        if (strtoupper(trim($pegawai->nama_jabatan)) === 'SECURITY') {
-            // Gaji tetap per hari
-            if (isset($pegawai->gaji_per_hari) && $pegawai->gaji_per_hari > 0) {
-                $total_gaji = $pegawai->gaji_per_hari;
+            if ($existing_rekap) {
+                $this->db->update('abs_rekap_absensi', $rekap_data, ['id' => $existing_rekap->id]);
             } else {
-                $total_gaji = ($pegawai->gaji_per_jam ?? 0) * 9; // fallback
+                $this->db->insert('abs_rekap_absensi', $rekap_data);
+            }
+            return;
+        }
+
+        // Jika sudah ada jam pulang → hitung durasi & gaji
+        if ($jam_masuk && $jam_pulang) {
+            // === Hitung dasar shift ===
+            $terlambat = 0;
+            if (strtotime($jam_masuk) > strtotime($shift->jam_mulai)) {
+                $terlambat = (strtotime($jam_masuk) - strtotime($shift->jam_mulai)) / 60;
             }
 
-            // Lama kerja bisa diisi durasi shift (opsional)
-            $lama_menit_kerja = $durasi_shift;
-
-            // Security tidak dihitung terlambat / pulang cepat
-            $terlambat = 0;
             $pulang_cepat = 0;
-        } else {
-            // === NORMAL ===
-            $gaji_per_menit = ($pegawai->gaji_per_jam ?? 0) / 60;
-            $total_gaji = round($lama_menit_kerja * $gaji_per_menit, 2);
-        }
+            if (strtotime($jam_pulang) < strtotime($shift->jam_selesai)) {
+                $pulang_cepat = (strtotime($shift->jam_selesai) - strtotime($jam_pulang)) / 60;
+            }
 
-        // === Simpan rekap ===
-        $rekap_data = [
-            'tanggal' => $tanggal,
-            'pegawai_id' => $pegawai_id,
-            'shift_id' => $shift_id,
-            'jam_masuk' => $jam_masuk,
-            'jam_pulang' => $jam_pulang,
-            'terlambat' => $terlambat,
-            'pulang_cepat' => $pulang_cepat,
-            'lama_menit_kerja' => $lama_menit_kerja,
-            'total_gaji' => $total_gaji
-        ];
+            $jam_awal_dihitung = max(strtotime($jam_masuk), strtotime($shift->jam_mulai)); // pilih jam mulai shift jika masuk terlalu awal
+            $jam_akhir_dihitung = min(strtotime($jam_pulang), strtotime($shift->jam_selesai)); // pilih jam selesai shift jika pulang terlalu cepat
 
-        if ($existing_rekap) {
-            $this->db->update('abs_rekap_absensi', $rekap_data, ['id' => $existing_rekap->id]);
-        } else {
-            $this->db->insert('abs_rekap_absensi', $rekap_data);
+            $lama_menit_kerja = max(($jam_akhir_dihitung - $jam_awal_dihitung) / 60, 0);
+            $durasi_shift = max((strtotime($shift->jam_selesai) - strtotime($shift->jam_mulai)) / 60, 0);
+
+            // Batasi agar tidak melebihi shift
+            if ($lama_menit_kerja > $durasi_shift) {
+                $lama_menit_kerja = $durasi_shift;
+            }
+
+            // === PERLAKUAN KHUSUS: SECURITY ===
+            $total_gaji = 0;
+            if (strtoupper(trim($pegawai->nama_jabatan)) === 'SECURITY') {
+                // === SECURITY: gaji per hari (gaji pokok dibagi 30) ===
+                if (isset($pegawai->gaji_pokok) && $pegawai->gaji_pokok > 0) {
+                    $total_gaji = round($pegawai->gaji_pokok / 30, 2);
+                } else {
+                    $total_gaji = round((($pegawai->gaji_per_jam ?? 0) * 9), 2); // fallback jika tidak ada gaji pokok
+                }
+
+                // Lama kerja = durasi shift standar
+                $lama_menit_kerja = $durasi_shift;
+
+                // Security tidak dihitung terlambat/pulang cepat
+                $terlambat = 0;
+                $pulang_cepat = 0;
+             } else {
+                // === NORMAL ===
+                $gaji_per_menit = ($pegawai->gaji_per_jam ?? 0) / 60;
+                $total_gaji = round($lama_menit_kerja * $gaji_per_menit, 2);
+            }
+
+            // === Simpan rekap ===
+            $rekap_data = [
+                'tanggal' => $tanggal,
+                'pegawai_id' => $pegawai_id,
+                'shift_id' => $shift_id,
+                'jam_masuk' => $jam_masuk,
+                'jam_pulang' => $jam_pulang,
+                'terlambat' => $terlambat,
+                'pulang_cepat' => $pulang_cepat,
+                'lama_menit_kerja' => $lama_menit_kerja,
+                'total_gaji' => $total_gaji
+            ];
+
+            if ($existing_rekap) {
+                $this->db->update('abs_rekap_absensi', $rekap_data, ['id' => $existing_rekap->id]);
+            } else {
+                $this->db->insert('abs_rekap_absensi', $rekap_data);
+            }
         }
     }
-}
 
 
     private function haversine($lat1, $lon1, $lat2, $lon2)

@@ -223,6 +223,22 @@
                         </div>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUM"
+                            aria-expanded="true" aria-controls="collapseUM">
+                            <i class="fas fa-fw fa-cog"></i>
+                            <span>Uang Makan</span>
+                        </a>
+                        <div id="collapseUM" class="collapse" aria-labelledby="headingUM" data-parent="#accordionSidebar">
+                            <div class="bg-white py-2 collapse-inner rounded">
+                                <a class="collapse-item" <a href="<?= site_url('uang_makan/index') ?>"><i class="fas fa-user-cog"></i> Uang Makan Harian</a>
+                                <a class="collapse-item" <a href="<?= site_url('uang_makan/uang_makan_bulanan') ?>"><i class="fas fa-user-cog"></i> Uang Makan Bulanan</a>
+                                <a class="collapse-item" <a href="<?= site_url('uang_makan/rekap') ?>"><i class="fas fa-user-cog"></i> Rekap Mingguan</a>
+                                <a class="collapse-item" <a href="<?= site_url('uang_makan/range') ?>"><i class="fas fa-user-cog"></i> Rekap Custom</a>
+                            </div>
+                        </div>
+                    </li>
+
+                    <li class="nav-item">
                         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseFour"
                             aria-expanded="true" aria-controls="collapseFour">
                             <i class="fas fa-fw fa-cog"></i>

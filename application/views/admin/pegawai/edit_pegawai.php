@@ -1,17 +1,17 @@
 <div class="container mt-4">
     <h2>Edit Data Pegawai</h2>
-    <form method="post" action="<?= site_url('admin/update_pegawai/'.$pegawai->id) ?>">
-    <div class="form-group">
-        <label>Kode User:</label>
-        <select name="kode_user" class="form-control" required>
-            <option value="">-- Pilih Kode User --</option>
-            <?php foreach ($kode_users as $row): ?>
-                <option value="<?= $row->kode_user ?>" <?= $row->kode_user == $pegawai->kode_user ? 'selected' : '' ?>>
-                    <?= $row->kode_user ?>
-                </option>
-            <?php endforeach; ?>
-        </select>
-    </div>
+    <form method="post" action="<?= site_url('admin/update_pegawai/' . $pegawai->id) ?>">
+        <div class="form-group">
+            <label>Kode User:</label>
+            <select name="kode_user" class="form-control" required>
+                <option value="">-- Pilih Kode User --</option>
+                <?php foreach ($kode_users as $row): ?>
+                    <option value="<?= $row->kode_user ?>" <?= $row->kode_user == $pegawai->kode_user ? 'selected' : '' ?>>
+                        <?= $row->kode_user ?>
+                    </option>
+                <?php endforeach; ?>
+            </select>
+        </div>
 
         <div class="form-group">
             <label>Nama:</label>
@@ -61,6 +61,11 @@
             <input type="number" name="tambahan_lain" class="form-control" value="<?= $pegawai->tambahan_lain ?>" required>
         </div>
         <div class="form-group">
+            <label>Uang Makan:</label>
+            <input type="number" name="uang_makan" class="form-control"
+                value="<?= $pegawai->uang_makan ?>" required>
+        </div>
+        <div class="form-group">
             <label>Tanggal Kontrak Awal:</label>
             <input type="date" name="tanggal_kontrak_awal" class="form-control" value="<?= $pegawai->tanggal_kontrak_awal ?>" required>
         </div>
@@ -82,7 +87,7 @@
 
         <div class="form-group">
             <label for="nomor_rekening">Nomor Rekening</label>
-            <input type="text" name="nomor_rekening" id="nomor_rekening" class="form-control" 
+            <input type="text" name="nomor_rekening" id="nomor_rekening" class="form-control"
                 placeholder="Nomor Rekening" value="<?= $pegawai->nomor_rekening ?>" required>
         </div>
 

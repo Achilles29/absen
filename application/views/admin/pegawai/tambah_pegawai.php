@@ -55,6 +55,10 @@
             <input type="number" name="tambahan_lain" class="form-control">
         </div>
         <div class="form-group">
+            <label>Uang Makan:</label>
+            <input type="number" name="uang_makan" class="form-control" placeholder="Rp" value="0">
+        </div>
+        <div class="form-group">
             <label>Tanggal Kontrak Awal:</label>
             <input type="date" name="tanggal_kontrak_awal" class="form-control" required>
         </div>
