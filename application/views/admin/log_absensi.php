@@ -43,6 +43,8 @@
     </form>
 
     <!-- Tabel Rekap Log Absensi -->
+    <div class="table-responsive">
+
     <table class="table table-bordered text-center">
         <thead>
             <tr>
@@ -80,4 +82,5 @@
             <?php endforeach; ?>
         </tbody>
     </table>
+</div>
 </div>

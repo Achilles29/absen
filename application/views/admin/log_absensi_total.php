@@ -19,6 +19,7 @@
 
         <button type="submit" class="btn btn-primary">Filter</button>
     </form>
+    <div class="table-responsive">
 
     <table class="table table-bordered">
         <thead>
@@ -60,6 +61,7 @@
             <?php endif; ?>
         </tbody>
     </table>
+</div>
 </div>
 
 <!-- Modal Edit -->

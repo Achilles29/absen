@@ -64,6 +64,8 @@
     </form>
 
     <!-- Tabel Rekapitulasi Lembur -->
+    <div class="table-responsive">
+    
     <table class="table table-bordered table-striped">
         <thead>
             <tr>
@@ -110,4 +112,5 @@
             </tr>
         </tfoot>
     </table>
+</div>
 </div>

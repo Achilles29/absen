@@ -19,6 +19,8 @@
     </form>
 
     <!-- Tabel Data Rekap Harian -->
+         <div class="table-responsive">
+
     <table class="table table-bordered">
         <thead>
             <tr>
@@ -55,4 +57,5 @@
             <?php endif; ?>
         </tbody>
     </table>
+</div>
 </div>

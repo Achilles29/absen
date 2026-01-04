@@ -13,6 +13,8 @@
     <?php endif; ?>
 
     <!-- Tabel Verifikasi -->
+    <div class="table-responsive">
+
     <table class="table table-bordered">
         <thead>
             <tr>
@@ -44,4 +46,5 @@
             <?php endforeach; ?>
         </tbody>
     </table>
+</div>
 </div>

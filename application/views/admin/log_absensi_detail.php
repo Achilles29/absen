@@ -27,6 +27,7 @@
         <button type="submit" class="btn btn-primary mt-3">Filter</button>
     </form>
 
+    <div class="table-responsive">
 
     <table class="table table-bordered mt-3">
         <thead>
@@ -64,4 +65,5 @@
             <?php endif; ?>
         </tbody>
     </table>
+</div>
 </div>
